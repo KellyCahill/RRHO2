@@ -1,4 +1,4 @@
-# genomicLibrary
+# RRHO2
 implementation of improved RRHO2, for which all regions in RRHO plots are meaningful.
 
 
