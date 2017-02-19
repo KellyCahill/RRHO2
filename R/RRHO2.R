@@ -204,7 +204,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       dev.off()
 
       .filename <- paste(outputdir, "/RRHO_down_",
-                         labels[1], "_VS_down_", labels[2], ".csv", sep = "")
+                         labels[1], "_VS_up_", labels[2], ".csv", sep = "")
       write.table(genelist.du, .filename, row.names = F,
                   quote = F, col.names = F)
       .filename <- paste(outputdir, "/RRHO_up_",
