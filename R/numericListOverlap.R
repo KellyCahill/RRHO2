@@ -1,15 +1,16 @@
 
 ## Compute the overlaps between two *numeric* lists:
-numericListOverlap<- function(sample1, sample2, stepsize, alternative, tol=0.5){
+numericListOverlap<- function(sample1, sample2, stepsize){
   n<- length(sample1)
   
   overlap<- function(a,b) {
-    count<-as.integer(sum(as.numeric(sample1[1:a] %in% sample2[1:b])))
-    
+    count<-as.integer(sum(as.numeric(sample1[1:a] %in% sample2[1:b])))    
 	log.pval<- -phyper(q=count-1, m=a, n=n-a+1, k=b, lower.tail=FALSE, log.p=TRUE)         
+    signs<- 1L
 	    
     return(c(counts=count, 
-             log.pval=as.numeric(log.pval)
+             log.pval=as.numeric(log.pval),
+			 signs=as.integer(signs)
              ))    
   }
   
@@ -20,6 +21,7 @@ numericListOverlap<- function(sample1, sample2, stepsize, alternative, tol=0.5){
   nrows<- sqrt(ncol(overlaps))
   matrix.counts<- matrix(overlaps['counts',], ncol=nrows)  
   matrix.log.pvals<- matrix(overlaps['log.pval',], ncol=nrows)  
+  matrix.signs<- matrix(overlaps['signs',], ncol=nrows)  
   
   return(list(counts=matrix.counts, log.pval=matrix.log.pvals))
 }
