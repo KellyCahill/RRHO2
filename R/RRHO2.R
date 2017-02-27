@@ -112,12 +112,12 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
                                        "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
                                        "red", "#7F0000"))
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
-      image(hypermat, xlab = "", ylab = "", col = jet.colors(100),
+      image(hypermat, xlab = "", ylab = "", col = jet.colors(101),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat)
-      color.bar(jet.colors(100), min = min(hypermat[finite.ind],
+      color.bar(jet.colors(101), min = min(hypermat[finite.ind],
                                            na.rm = TRUE), max = max(hypermat[finite.ind],
                                                                     na.rm = TRUE), nticks = 6, title = "-log(P-value)")
       dev.off()
@@ -131,12 +131,12 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
                                        "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
                                        "red", "#7F0000"))
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
-      image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(100),
+      image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(101),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat_normal)
-      color.bar(jet.colors(100), min = min(hypermat_normal[finite.ind],
+      color.bar(jet.colors(101), min = min(hypermat_normal[finite.ind],
                                            na.rm = TRUE), max = max(hypermat_normal[finite.ind],
                                                                     na.rm = TRUE), nticks = 6, title = "-log(P-value)")
       dev.off()
@@ -150,12 +150,12 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
                                        "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
                                        "red", "#7F0000"))
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
-      image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(100),
+      image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(101),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat_flipX2)
-      color.bar(jet.colors(100), min = min(hypermat_flipX2[finite.ind],
+      color.bar(jet.colors(101), min = min(hypermat_flipX2[finite.ind],
                                            na.rm = TRUE), max = max(hypermat_flipX2[finite.ind],
                                                                     na.rm = TRUE), nticks = 6, title = "-log(P-value)")
       dev.off()
@@ -170,12 +170,12 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
                                        "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
                                        "red", "#7F0000"))
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
-      image(hypermat, xlab = "", ylab = "", col = jet.colors(100),breaks=c(seq(0,maximum,length.out = 101),1e10),
+      image(hypermat, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat)
-      color.bar(jet.colors(100), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
+      color.bar(jet.colors(101), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
       dev.off()
 
       .filename <- paste("RRHOMap_fixMax_normal_", labels[1], "_VS_",
@@ -187,12 +187,12 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
                                        "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
                                        "red", "#7F0000"))
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
-      image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(100),breaks=c(seq(0,maximum,length.out = 101),1e10),
+      image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat_normal)
-      color.bar(jet.colors(100), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
+      color.bar(jet.colors(101), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
       dev.off()
 	  
       .filename <- paste("RRHOMap_fixMax_flipX_", labels[1], "_VS_",
@@ -204,12 +204,12 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
                                        "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
                                        "red", "#7F0000"))
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
-      image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(100),breaks=c(seq(0,maximum,length.out = 101),1e10),
+      image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat_flipX2)
-      color.bar(jet.colors(100), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
+      color.bar(jet.colors(101), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
       dev.off()
 	  
 	  	  
