@@ -30,7 +30,7 @@
 
 RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
           labels, plots = FALSE, outputdir = NULL, BY = FALSE,
-          log10.ind = FALSE)
+          log10.ind = FALSE, maximum=200)
 {
   if (length(list1[, 1]) != length(unique(list1[, 1])))
     stop("Non-unique gene identifier found in list1")
@@ -54,6 +54,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
   hypermat_normal <- .hypermat_normal$log.pval
   .hypermat_flipX <- numericListOverlap(rev(list1[, 1]), list2[, 1], stepsize)
   hypermat_flipX <- .hypermat_flipX$log.pval
+  hypermat_flipX2 <- hypermat_flipX[,nrow(hypermat_flipX):1]
 
   stepList1 <- seq(1, nlist1, stepsize)
   stepList2 <- seq(1, nlist2, stepsize)
@@ -71,8 +72,12 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
   hypermat[(boundary1+1):len1,1:boundary2] <- hypermat_flipX[(len1 - boundary1):1,1:boundary2] ## u1d2, quadrant IV
 
 
-  if (log10.ind)
-    hypermat <- hypermat * log10(exp(1))
+  if (log10.ind){
+  	hypermat <- hypermat * log10(exp(1))
+	hypermat_normal <- hypermat_normal * log10(exp(1))
+	hypermat_flipX <- hypermat_flipX * log10(exp(1))
+  }
+    
   if (BY) {
     hypermatvec <- matrix(hypermat, nrow = nrow(hypermat) *
                             ncol(hypermat), ncol = 1)
@@ -97,10 +102,10 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
           rect(0, y, 10, y + 1/scale, col = lut[i], border = NA)
         }
       }
-      .filename <- paste("RRHOMap_", labels[1], "_VS_",
-                         labels[2], ".jpg", sep = "")
-      jpeg(filename = paste(outputdir, .filename, sep = "/"),
-           width = 8, height = 8, units = "in", quality = 100,
+      .filename <- paste("RRHOMap_combined_", labels[1], "_VS_",
+                         labels[2], ".tiff", sep = "")
+      tiff(filename = paste(outputdir, .filename, sep = "/"),
+           width = 8, height = 8, units = "in", 
            res = 150)
       jet.colors <- colorRampPalette(c("#00007F", "blue",
                                        "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
@@ -115,21 +120,98 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
                                            na.rm = TRUE), max = max(hypermat[finite.ind],
                                                                     na.rm = TRUE), nticks = 6, title = "-log(P-value)")
       dev.off()
-      list2ind <- match(list1[, 1], list2[, 1])
-      list1ind <- 1:nlist1
-      corval <- cor(list1ind, list2ind, method = "spearman")
-      .filename <- paste("RankScatter_", labels[1], "_VS_",
-                         labels[2], ".jpg", sep = "")
-      jpeg(paste(outputdir, .filename, sep = "/"), width = 8,
-           height = 8, units = "in", quality = 100, res = 150)
-      plot(list1ind, list2ind, xlab = paste(labels[1],
-                                            "(Rank)"), ylab = paste(labels[2], "(Rank)"),
-           pch = 20, main = paste("Rank-Rank Scatter (rho = ",
-                                  signif(corval, digits = 3), ")", sep = ""),
-           cex = 0.5)
-      model <- lm(list2ind ~ list1ind)
-      lines(predict(model), col = "red", lwd = 3)
+
+      .filename <- paste("RRHOMap_normal_", labels[1], "_VS_",
+                         labels[2], ".tiff", sep = "")
+      tiff(filename = paste(outputdir, .filename, sep = "/"),
+           width = 8, height = 8, units = "in", 
+           res = 150)
+      jet.colors <- colorRampPalette(c("#00007F", "blue",
+                                       "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
+                                       "red", "#7F0000"))
+      layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
+      image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(100),
+            axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+      mtext(labels[2], 2, 0.5)
+      mtext(labels[1], 1, 0.5)
+      finite.ind <- is.finite(hypermat_normal)
+      color.bar(jet.colors(100), min = min(hypermat_normal[finite.ind],
+                                           na.rm = TRUE), max = max(hypermat_normal[finite.ind],
+                                                                    na.rm = TRUE), nticks = 6, title = "-log(P-value)")
       dev.off()
+	  
+      .filename <- paste("RRHOMap_flipX_", labels[1], "_VS_",
+                         labels[2], ".tiff", sep = "")
+      tiff(filename = paste(outputdir, .filename, sep = "/"),
+           width = 8, height = 8, units = "in", 
+           res = 150)
+      jet.colors <- colorRampPalette(c("#00007F", "blue",
+                                       "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
+                                       "red", "#7F0000"))
+      layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
+      image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(100),
+            axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+      mtext(labels[2], 2, 0.5)
+      mtext(labels[1], 1, 0.5)
+      finite.ind <- is.finite(hypermat_flipX2)
+      color.bar(jet.colors(100), min = min(hypermat_flipX2[finite.ind],
+                                           na.rm = TRUE), max = max(hypermat_flipX2[finite.ind],
+                                                                    na.rm = TRUE), nticks = 6, title = "-log(P-value)")
+      dev.off()
+	  
+	  ## maximum
+      .filename <- paste("RRHOMap_fixMax_combined_", labels[1], "_VS_",
+                         labels[2], ".tiff", sep = "")
+      tiff(filename = paste(outputdir, .filename, sep = "/"),
+           width = 8, height = 8, units = "in", 
+           res = 150)
+      jet.colors <- colorRampPalette(c("#00007F", "blue",
+                                       "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
+                                       "red", "#7F0000"))
+      layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
+      image(hypermat, xlab = "", ylab = "", col = jet.colors(100),breaks=seq(0,maximum,length.out = 101),
+            axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+      mtext(labels[2], 2, 0.5)
+      mtext(labels[1], 1, 0.5)
+      finite.ind <- is.finite(hypermat)
+      color.bar(jet.colors(100), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
+      dev.off()
+
+      .filename <- paste("RRHOMap_fixMax_normal_", labels[1], "_VS_",
+                         labels[2], ".tiff", sep = "")
+      tiff(filename = paste(outputdir, .filename, sep = "/"),
+           width = 8, height = 8, units = "in", 
+           res = 150)
+      jet.colors <- colorRampPalette(c("#00007F", "blue",
+                                       "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
+                                       "red", "#7F0000"))
+      layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
+      image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(100),breaks=seq(0,maximum,length.out = 101),
+            axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+      mtext(labels[2], 2, 0.5)
+      mtext(labels[1], 1, 0.5)
+      finite.ind <- is.finite(hypermat_normal)
+      color.bar(jet.colors(100), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
+      dev.off()
+	  
+      .filename <- paste("RRHOMap_fixMax_flipX_", labels[1], "_VS_",
+                         labels[2], ".tiff", sep = "")
+      tiff(filename = paste(outputdir, .filename, sep = "/"),
+           width = 8, height = 8, units = "in", 
+           res = 150)
+      jet.colors <- colorRampPalette(c("#00007F", "blue",
+                                       "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
+                                       "red", "#7F0000"))
+      layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
+      image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(100),breaks=seq(0,maximum,length.out = 101),
+            axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+      mtext(labels[2], 2, 0.5)
+      mtext(labels[1], 1, 0.5)
+      finite.ind <- is.finite(hypermat_flipX2)
+      color.bar(jet.colors(100), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
+      dev.off()
+	  
+	  	  
       maxind.dd <- which(max(hypermat[(boundary1+1):len1, (boundary2+1):len2],
                              na.rm = TRUE) == hypermat, arr.ind = TRUE)
 	  #
@@ -177,9 +259,9 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       write.table(genelist.uu, .filename, row.names = F,
                   quote = F, col.names = F)
       .filename <- paste(outputdir, "/RRHO_VennCon", labels[1],
-                         "_VS_", labels[2], ".jpg", sep = "")
-      jpeg(.filename, width = 8.5, height = 5, units = "in",
-           quality = 100, res = 150)
+                         "_VS_", labels[2], ".tiff", sep = "")
+      tiff(.filename, width = 8.5, height = 5, units = "in",
+            res = 150)
       vp1 <- viewport(x = 0.25, y = 0.5, width = 0.5, height = 0.9)
       vp2 <- viewport(x = 0.75, y = 0.5, width = 0.5, height = 0.9)
       pushViewport(vp1)
@@ -213,9 +295,9 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
                   quote = F, col.names = F)
 	  #
       .filename <- paste(outputdir, "/RRHO_VennDis", labels[1],
-                         "_VS_", labels[2], ".jpg", sep = "")
-      jpeg(.filename, width = 8.5, height = 5, units = "in",
-           quality = 100, res = 150)
+                         "_VS_", labels[2], ".tiff", sep = "")
+      tiff(.filename, width = 8.5, height = 5, units = "in",
+            res = 150)
       vp1 <- viewport(x = 0.25, y = 0.5, width = 0.5, height = 0.9)
       vp2 <- viewport(x = 0.75, y = 0.5, width = 0.5, height = 0.9)
       pushViewport(vp1)
