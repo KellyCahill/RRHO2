@@ -54,7 +54,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
   hypermat_normal <- .hypermat_normal$log.pval
   .hypermat_flipX <- numericListOverlap(rev(list1[, 1]), list2[, 1], stepsize)
   hypermat_flipX <- .hypermat_flipX$log.pval
-  hypermat_flipX2 <- hypermat_flipX[,nrow(hypermat_flipX):1]
+  hypermat_flipX2 <- hypermat_flipX[nrow(hypermat_flipX):1,]
 
   stepList1 <- seq(1, nlist1, stepsize)
   stepList2 <- seq(1, nlist2, stepsize)
@@ -76,6 +76,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
   	hypermat <- hypermat * log10(exp(1))
 	hypermat_normal <- hypermat_normal * log10(exp(1))
 	hypermat_flipX <- hypermat_flipX * log10(exp(1))
+	hypermat_flipX2 <- hypermat_flipX2 * log10(exp(1))
   }
     
   if (BY) {
@@ -169,7 +170,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
                                        "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
                                        "red", "#7F0000"))
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
-      image(hypermat, xlab = "", ylab = "", col = jet.colors(100),breaks=seq(0,maximum,length.out = 101),
+      image(hypermat, xlab = "", ylab = "", col = jet.colors(100),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
@@ -186,7 +187,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
                                        "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
                                        "red", "#7F0000"))
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
-      image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(100),breaks=seq(0,maximum,length.out = 101),
+      image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(100),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
@@ -203,7 +204,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
                                        "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
                                        "red", "#7F0000"))
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
-      image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(100),breaks=seq(0,maximum,length.out = 101),
+      image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(100),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
