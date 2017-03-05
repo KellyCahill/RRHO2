@@ -89,6 +89,9 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       hypermat.by <- hypermat.by * log10(exp(1))
     result$hypermat.by <- hypermat.by
   }
+  
+  maxIndex <- which(max(hypermat,na.rm = TRUE) == hypermat, arr.ind = TRUE)
+  
   if (plots) {
     try({
       color.bar <- function(lut, min, max = -min, nticks = 11,
@@ -103,6 +106,157 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
           rect(0, y, 10, y + 1/scale, col = lut[i], border = NA)
         }
       }
+	  
+	  
+	  ################
+	  ## with highest point
+	  ################
+	  
+      .filename <- paste("RRHOMap_markH_combined_", labels[1], "_VS_",
+                         labels[2], ".tiff", sep = "")
+      tiff(filename = paste(outputdir, .filename, sep = "/"),
+           width = 8, height = 8, units = "in", 
+           res = 150)
+      jet.colors <- colorRampPalette(c("#00007F", "blue",
+                                       "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
+                                       "red", "#7F0000"))
+      layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
+      image(hypermat, xlab = "", ylab = "", col = jet.colors(101),
+            axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
+	  x1 <- (maxIndex[1] - 1)/(nrow(hypermat) - 1)
+	  x2 <- (maxIndex[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1,x2,pch=18,cex=4)	  	  
+      mtext(labels[2], 2, 0.5)
+      mtext(labels[1], 1, 0.5)
+	  
+      finite.ind <- is.finite(hypermat)
+      color.bar(jet.colors(101), min = min(hypermat[finite.ind],
+                                           na.rm = TRUE), max = max(hypermat[finite.ind],
+                                                                    na.rm = TRUE), nticks = 6, title = "-log(P-value)")
+      dev.off()
+
+      .filename <- paste("RRHOMap_markH_normal_", labels[1], "_VS_",
+                         labels[2], ".tiff", sep = "")
+      tiff(filename = paste(outputdir, .filename, sep = "/"),
+           width = 8, height = 8, units = "in", 
+           res = 150)
+      jet.colors <- colorRampPalette(c("#00007F", "blue",
+                                       "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
+                                       "red", "#7F0000"))
+      layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
+      image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(101),
+            axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
+	  x1 <- (maxIndex[1] - 1)/(nrow(hypermat) - 1)
+	  x2 <- (maxIndex[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1,x2,pch=18,cex=4)	  	  
+      mtext(labels[2], 2, 0.5)
+      mtext(labels[1], 1, 0.5)
+      finite.ind <- is.finite(hypermat_normal)
+      color.bar(jet.colors(101), min = min(hypermat_normal[finite.ind],
+                                           na.rm = TRUE), max = max(hypermat_normal[finite.ind],
+                                                                    na.rm = TRUE), nticks = 6, title = "-log(P-value)")
+      dev.off()
+	  
+      .filename <- paste("RRHOMap_markH_flipX_", labels[1], "_VS_",
+                         labels[2], ".tiff", sep = "")
+      tiff(filename = paste(outputdir, .filename, sep = "/"),
+           width = 8, height = 8, units = "in", 
+           res = 150)
+      jet.colors <- colorRampPalette(c("#00007F", "blue",
+                                       "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
+                                       "red", "#7F0000"))
+      layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
+      image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(101),
+            axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
+	  x1 <- (maxIndex[1] - 1)/(nrow(hypermat) - 1)
+	  x2 <- (maxIndex[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1,x2,pch=18,cex=4)	  	  
+      mtext(labels[2], 2, 0.5)
+      mtext(labels[1], 1, 0.5)
+      finite.ind <- is.finite(hypermat_flipX2)
+      color.bar(jet.colors(101), min = min(hypermat_flipX2[finite.ind],
+                                           na.rm = TRUE), max = max(hypermat_flipX2[finite.ind],
+                                                                    na.rm = TRUE), nticks = 6, title = "-log(P-value)")
+      dev.off()
+	  
+	  ## maximum
+      .filename <- paste("RRHOMap_markH_fixMax_combined_", labels[1], "_VS_",
+                         labels[2], ".tiff", sep = "")
+      tiff(filename = paste(outputdir, .filename, sep = "/"),
+           width = 8, height = 8, units = "in", 
+           res = 150)
+      jet.colors <- colorRampPalette(c("#00007F", "blue",
+                                       "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
+                                       "red", "#7F0000"))
+      layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
+      image(hypermat, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
+            axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
+	  x1 <- (maxIndex[1] - 1)/(nrow(hypermat) - 1)
+	  x2 <- (maxIndex[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1,x2,pch=18,cex=4)	  	  
+      mtext(labels[2], 2, 0.5)
+      mtext(labels[1], 1, 0.5)
+      finite.ind <- is.finite(hypermat)
+      color.bar(jet.colors(101), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
+      dev.off()
+
+      .filename <- paste("RRHOMap_markH_fixMax_normal_", labels[1], "_VS_",
+                         labels[2], ".tiff", sep = "")
+      tiff(filename = paste(outputdir, .filename, sep = "/"),
+           width = 8, height = 8, units = "in", 
+           res = 150)
+      jet.colors <- colorRampPalette(c("#00007F", "blue",
+                                       "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
+                                       "red", "#7F0000"))
+      layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
+      image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
+            axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
+	  x1 <- (maxIndex[1] - 1)/(nrow(hypermat) - 1)
+	  x2 <- (maxIndex[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1,x2,pch=18,cex=4)	  	  
+      mtext(labels[2], 2, 0.5)
+      mtext(labels[1], 1, 0.5)
+      finite.ind <- is.finite(hypermat_normal)
+      color.bar(jet.colors(101), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
+      dev.off()
+	  
+	  
+      .filename <- paste("RRHOMap_markH_fixMax_flipX_", labels[1], "_VS_",
+                         labels[2], ".tiff", sep = "")
+      tiff(filename = paste(outputdir, .filename, sep = "/"),
+           width = 8, height = 8, units = "in", 
+           res = 150)
+      jet.colors <- colorRampPalette(c("#00007F", "blue",
+                                       "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00",
+                                       "red", "#7F0000"))
+      layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
+      image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
+            axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
+	  x1 <- (maxIndex[1] - 1)/(nrow(hypermat) - 1)
+	  x2 <- (maxIndex[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1,x2,pch=18,cex=4)	  	  
+      mtext(labels[2], 2, 0.5)
+      mtext(labels[1], 1, 0.5)
+      finite.ind <- is.finite(hypermat_flipX2)
+      color.bar(jet.colors(101), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
+      dev.off()
+	  
+	  ################
+	  ## without highest point
+	  ################
+	  
       .filename <- paste("RRHOMap_combined_", labels[1], "_VS_",
                          labels[2], ".tiff", sep = "")
       tiff(filename = paste(outputdir, .filename, sep = "/"),
@@ -114,10 +268,10 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat, xlab = "", ylab = "", col = jet.colors(101),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
-	  segments(x0 = boundary1,x1 = boundary1,y0 = 1,y1 = len2,lwd=4,col='white')
-	  segments(x0 = 1,x1 = len1,y0 = boundary2,y1 = boundary2,lwd=4,col='white')
 	  
       finite.ind <- is.finite(hypermat)
       color.bar(jet.colors(101), min = min(hypermat[finite.ind],
@@ -136,6 +290,8 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(101),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat_normal)
@@ -155,6 +311,8 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(101),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat_flipX2)
@@ -175,6 +333,8 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat)
@@ -192,11 +352,14 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat_normal)
       color.bar(jet.colors(101), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
       dev.off()
+	  
 	  
       .filename <- paste("RRHOMap_fixMax_flipX_", labels[1], "_VS_",
                          labels[2], ".tiff", sep = "")
@@ -209,11 +372,14 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
+	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat_flipX2)
       color.bar(jet.colors(101), min = 0, max = maximum, nticks = 6, title = "-log(P-value)")
       dev.off()
+	  
 	  
 	  	  
       maxind.dd <- which(max(hypermat[(boundary1+1):len1, (boundary2+1):len2],
