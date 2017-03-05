@@ -116,6 +116,9 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
+	  segments(x0 = boundary1,x1 = boundary1,y0 = 1,y1 = len2,lwd=4,col='white')
+	  segments(x0 = 1,x1 = len1,y0 = boundary2,y1 = boundary2,lwd=4,col='white')
+	  
       finite.ind <- is.finite(hypermat)
       color.bar(jet.colors(101), min = min(hypermat[finite.ind],
                                            na.rm = TRUE), max = max(hypermat[finite.ind],
