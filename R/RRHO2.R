@@ -90,7 +90,47 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
     result$hypermat.by <- hypermat.by
   }
   
-  maxIndex <- which(max(hypermat,na.rm = TRUE) == hypermat, arr.ind = TRUE)
+  
+  maxind <- which(max(hypermat, na.rm = TRUE) == hypermat, arr.ind = TRUE)
+  
+  maxind.dd <- which(max(hypermat[(boundary1+1):len1, (boundary2+1):len2],
+                         na.rm = TRUE) == hypermat, arr.ind = TRUE)
+  #
+  maxind.dd <- maxind.dd[maxind.dd[,1]>=(boundary1+1) & maxind.dd[,1]<=len1 & maxind.dd[,2]>=(boundary2+1) & maxind.dd[,2]<=len2,]
+
+  indlist1.dd <- seq(1, nlist1, stepsize)[maxind.dd[1]]
+  indlist2.dd <- seq(1, nlist2, stepsize)[maxind.dd[2]]
+  genelist.dd <- intersect(list1[indlist1.dd:nlist1,
+                                 1], list2[indlist2.dd:nlist2, 1])
+  maxind.uu <- which(max(hypermat[1:boundary1, 1:boundary2],
+                         na.rm = TRUE) == hypermat, arr.ind = TRUE)
+  #
+  maxind.uu <- maxind.uu[maxind.uu[,1]>=1 & maxind.uu[,1]<=boundary1 & maxind.uu[,2]>=1 & maxind.uu[,2]<=boundary2,]
+
+  indlist1.uu <- seq(1, nlist1, stepsize)[maxind.uu[1]]
+  indlist2.uu <- seq(1, nlist2, stepsize)[maxind.uu[2]]
+  genelist.uu <- intersect(list1[1:indlist1.uu, 1],
+                           list2[1:indlist2.uu, 1])
+  #
+  maxind.ud <- which(max(hypermat[1:boundary1, (boundary2+1):len2],
+                         na.rm = TRUE) == hypermat, arr.ind = TRUE)
+  #
+  maxind.ud <- maxind.ud[maxind.ud[,1]>=1 & maxind.ud[,1]<=boundary1 & maxind.ud[,2]>=(boundary2+1) & maxind.ud[,2]<=len2,]
+
+  indlist1.ud <- seq(1, nlist1, stepsize)[maxind.ud[1]]
+  indlist2.ud <- seq(1, nlist2, stepsize)[maxind.ud[2]]
+  genelist.ud <- intersect(list1[1:indlist1.ud,
+                                 1], list2[indlist2.ud:nlist2, 1])
+  maxind.du <- which(max(hypermat[(boundary1+1):len1, 1:boundary2],
+                         na.rm = TRUE) == hypermat, arr.ind = TRUE)
+  #
+  maxind.du <- maxind.du[maxind.du[,1]>=(boundary1+1) & maxind.du[,1]<=len1 & maxind.du[,2]>=1 & maxind.du[,2]<=boundary2,]
+
+  indlist1.du <- seq(1, nlist1, stepsize)[maxind.du[1]]
+  indlist2.du <- seq(1, nlist2, stepsize)[maxind.du[2]]
+  genelist.du <- intersect(list1[indlist1.du:nlist1, 1],
+                           list2[1:indlist2.du, 1])
+
   
   if (plots) {
     try({
@@ -123,11 +163,21 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat, xlab = "", ylab = "", col = jet.colors(101),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
-	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = boundary1/len1 ,x1 = boundary1 /len1 ,y0 = -0.2,y1 = 1.2,lwd=4,col='white')
 	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
-	  x1 <- (maxIndex[1] - 1)/(nrow(hypermat) - 1)
-	  x2 <- (maxIndex[2] - 1)/(ncol(hypermat) - 1)
-	  points(x1,x2,pch=18,cex=4)	  	  
+	  x1.dd <- (maxind.dd[1] - 1)/(nrow(hypermat) - 1)
+	  x2.dd <- (maxind.dd[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.dd,x2.dd,pch=18,cex=4)	  	  
+	  x1.uu <- (maxind.uu[1] - 1)/(nrow(hypermat) - 1)
+	  x2.uu <- (maxind.uu[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.uu,x2.uu,pch=18,cex=4)	  	  
+	  x1.ud <- (maxind.ud[1] - 1)/(nrow(hypermat) - 1)
+	  x2.ud <- (maxind.ud[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.ud,x2.ud,pch=18,cex=4)	  	  
+	  x1.du <- (maxind.du[1] - 1)/(nrow(hypermat) - 1)
+	  x2.du <- (maxind.du[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.du,x2.du,pch=18,cex=4)	  	  
+	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
 	  
@@ -148,11 +198,14 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(101),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
-	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = boundary1/len1 ,x1 = boundary1 /len1 ,y0 = -0.2,y1 = 1.2,lwd=4,col='white')
 	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
-	  x1 <- (maxIndex[1] - 1)/(nrow(hypermat) - 1)
-	  x2 <- (maxIndex[2] - 1)/(ncol(hypermat) - 1)
-	  points(x1,x2,pch=18,cex=4)	  	  
+	  x1.dd <- (maxind.dd[1] - 1)/(nrow(hypermat) - 1)
+	  x2.dd <- (maxind.dd[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.dd,x2.dd,pch=18,cex=4)	  	  
+	  x1.uu <- (maxind.uu[1] - 1)/(nrow(hypermat) - 1)
+	  x2.uu <- (maxind.uu[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.uu,x2.uu,pch=18,cex=4)	  	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat_normal)
@@ -172,11 +225,14 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(101),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
-	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = boundary1/len1 ,x1 = boundary1 /len1 ,y0 = -0.2,y1 = 1.2,lwd=4,col='white')
 	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
-	  x1 <- (maxIndex[1] - 1)/(nrow(hypermat) - 1)
-	  x2 <- (maxIndex[2] - 1)/(ncol(hypermat) - 1)
-	  points(x1,x2,pch=18,cex=4)	  	  
+	  x1.ud <- (maxind.ud[1] - 1)/(nrow(hypermat) - 1)
+	  x2.ud <- (maxind.ud[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.ud,x2.ud,pch=18,cex=4)	  	  
+	  x1.du <- (maxind.du[1] - 1)/(nrow(hypermat) - 1)
+	  x2.du <- (maxind.du[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.du,x2.du,pch=18,cex=4)	  	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat_flipX2)
@@ -197,11 +253,20 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
-	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = boundary1/len1 ,x1 = boundary1 /len1 ,y0 = -0.2,y1 = 1.2,lwd=4,col='white')
 	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
-	  x1 <- (maxIndex[1] - 1)/(nrow(hypermat) - 1)
-	  x2 <- (maxIndex[2] - 1)/(ncol(hypermat) - 1)
-	  points(x1,x2,pch=18,cex=4)	  	  
+	  x1.dd <- (maxind.dd[1] - 1)/(nrow(hypermat) - 1)
+	  x2.dd <- (maxind.dd[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.dd,x2.dd,pch=18,cex=4)	  	  
+	  x1.uu <- (maxind.uu[1] - 1)/(nrow(hypermat) - 1)
+	  x2.uu <- (maxind.uu[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.uu,x2.uu,pch=18,cex=4)	  	  
+	  x1.ud <- (maxind.ud[1] - 1)/(nrow(hypermat) - 1)
+	  x2.ud <- (maxind.ud[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.ud,x2.ud,pch=18,cex=4)	  	  
+	  x1.du <- (maxind.du[1] - 1)/(nrow(hypermat) - 1)
+	  x2.du <- (maxind.du[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.du,x2.du,pch=18,cex=4)	  	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat)
@@ -219,11 +284,14 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
-	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = boundary1/len1 ,x1 = boundary1 /len1 ,y0 = -0.2,y1 = 1.2,lwd=4,col='white')
 	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
-	  x1 <- (maxIndex[1] - 1)/(nrow(hypermat) - 1)
-	  x2 <- (maxIndex[2] - 1)/(ncol(hypermat) - 1)
-	  points(x1,x2,pch=18,cex=4)	  	  
+	  x1.dd <- (maxind.dd[1] - 1)/(nrow(hypermat) - 1)
+	  x2.dd <- (maxind.dd[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.dd,x2.dd,pch=18,cex=4)	  	  
+	  x1.uu <- (maxind.uu[1] - 1)/(nrow(hypermat) - 1)
+	  x2.uu <- (maxind.uu[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.uu,x2.uu,pch=18,cex=4)	  	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat_normal)
@@ -242,11 +310,14 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
-	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = boundary1/len1 ,x1 = boundary1 /len1 ,y0 = -0.2,y1 = 1.2,lwd=4,col='white')
 	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
-	  x1 <- (maxIndex[1] - 1)/(nrow(hypermat) - 1)
-	  x2 <- (maxIndex[2] - 1)/(ncol(hypermat) - 1)
-	  points(x1,x2,pch=18,cex=4)	  	  
+	  x1.ud <- (maxind.ud[1] - 1)/(nrow(hypermat) - 1)
+	  x2.ud <- (maxind.ud[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.ud,x2.ud,pch=18,cex=4)	  	  
+	  x1.du <- (maxind.du[1] - 1)/(nrow(hypermat) - 1)
+	  x2.du <- (maxind.du[2] - 1)/(ncol(hypermat) - 1)
+	  points(x1.du,x2.du,pch=18,cex=4)	  	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
       finite.ind <- is.finite(hypermat_flipX2)
@@ -268,7 +339,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat, xlab = "", ylab = "", col = jet.colors(101),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
-	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = boundary1/len1 ,x1 = boundary1 /len1 ,y0 = -0.2,y1 = 1.2,lwd=4,col='white')
 	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
@@ -290,7 +361,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(101),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
-	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = boundary1/len1 ,x1 = boundary1 /len1 ,y0 = -0.2,y1 = 1.2,lwd=4,col='white')
 	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
@@ -311,7 +382,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(101),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
-	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = boundary1/len1 ,x1 = boundary1 /len1 ,y0 = -0.2,y1 = 1.2,lwd=4,col='white')
 	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
@@ -333,7 +404,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
-	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = boundary1/len1 ,x1 = boundary1 /len1 ,y0 = -0.2,y1 = 1.2,lwd=4,col='white')
 	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
@@ -352,7 +423,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat_normal, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
-	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = boundary1/len1 ,x1 = boundary1 /len1 ,y0 = -0.2,y1 = 1.2,lwd=4,col='white')
 	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
@@ -372,7 +443,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       layout(matrix(c(rep(1, 5), 2), 1, 6, byrow = TRUE))
       image(hypermat_flipX2, xlab = "", ylab = "", col = jet.colors(101),breaks=c(seq(0,maximum,length.out = 101),1e10),
             axes = FALSE, main = "Rank Rank Hypergeometric Overlap Map")
-	  segments(x0 = (boundary1-1)/(len1 - 1),x1 = (boundary1 - 1)/(len1 - 1),y0 = -0.2,y1 = 1.2,lwd=4,col='white')
+	  segments(x0 = boundary1/len1 ,x1 = boundary1 /len1 ,y0 = -0.2,y1 = 1.2,lwd=4,col='white')
 	  segments(x0 = -0.2,x1 = 1.2,y0 = boundary2/len2,y1 = boundary2/len2,lwd=4,col='white')	  
       mtext(labels[2], 2, 0.5)
       mtext(labels[1], 1, 0.5)
@@ -382,44 +453,6 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
 	  
 	  
 	  	  
-      maxind.dd <- which(max(hypermat[(boundary1+1):len1, (boundary2+1):len2],
-                             na.rm = TRUE) == hypermat, arr.ind = TRUE)
-	  #
-	  maxind.dd <- maxind.dd[maxind.dd[,1]>=(boundary1+1) & maxind.dd[,1]<=len1 & maxind.dd[,2]>=(boundary2+1) & maxind.dd[,2]<=len2,]
-
-      indlist1.dd <- seq(1, nlist1, stepsize)[maxind.dd[1]]
-      indlist2.dd <- seq(1, nlist2, stepsize)[maxind.dd[2]]
-      genelist.dd <- intersect(list1[indlist1.dd:nlist1,
-                                     1], list2[indlist2.dd:nlist2, 1])
-      maxind.uu <- which(max(hypermat[1:boundary1, 1:boundary2],
-                             na.rm = TRUE) == hypermat, arr.ind = TRUE)
-	  #
-	  maxind.uu <- maxind.uu[maxind.uu[,1]>=1 & maxind.uu[,1]<=boundary1 & maxind.uu[,2]>=1 & maxind.uu[,2]<=boundary2,]
-
-      indlist1.uu <- seq(1, nlist1, stepsize)[maxind.uu[1]]
-      indlist2.uu <- seq(1, nlist2, stepsize)[maxind.uu[2]]
-      genelist.uu <- intersect(list1[1:indlist1.uu, 1],
-                               list2[1:indlist2.uu, 1])
-	  #
-      maxind.ud <- which(max(hypermat[1:boundary1, (boundary2+1):len2],
-                             na.rm = TRUE) == hypermat, arr.ind = TRUE)
-	  #
-	  maxind.ud <- maxind.ud[maxind.ud[,1]>=1 & maxind.ud[,1]<=boundary1 & maxind.ud[,2]>=(boundary2+1) & maxind.ud[,2]<=len2,]
-
-      indlist1.ud <- seq(1, nlist1, stepsize)[maxind.ud[1]]
-      indlist2.ud <- seq(1, nlist2, stepsize)[maxind.ud[2]]
-      genelist.ud <- intersect(list1[1:indlist1.ud,
-                                     1], list2[indlist2.ud:nlist2, 1])
-      maxind.du <- which(max(hypermat[(boundary1+1):len1, 1:boundary2],
-                             na.rm = TRUE) == hypermat, arr.ind = TRUE)
-	  #
-	  maxind.du <- maxind.du[maxind.du[,1]>=(boundary1+1) & maxind.du[,1]<=len1 & maxind.du[,2]>=1 & maxind.du[,2]<=boundary2,]
-
-      indlist1.du <- seq(1, nlist1, stepsize)[maxind.du[1]]
-      indlist2.du <- seq(1, nlist2, stepsize)[maxind.du[2]]
-      genelist.du <- intersect(list1[indlist1.du:nlist1, 1],
-                               list2[1:indlist2.du, 1])
-
       .filename <- paste(outputdir, "/RRHO_down_",
                          labels[1], "_VS_down_", labels[2], ".csv", sep = "")
       write.table(genelist.dd, .filename, row.names = F,
