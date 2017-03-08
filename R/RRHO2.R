@@ -94,10 +94,10 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
   }
   
   
-  maxind.dd <- which(max(hypermat[(boundary1+1):len1, (boundary2+1):len2],
+  maxind.dd <- which(max(hypermat[lenStrip1 + (boundary1+1):len1, lenStrip2 + (boundary2+1):len2],
                          na.rm = TRUE) == hypermat, arr.ind = TRUE)
   #
-  maxind.dd <- maxind.dd[maxind.dd[,1]>=(boundary1+1) & maxind.dd[,1]<=len1 & maxind.dd[,2]>=(boundary2+1) & maxind.dd[,2]<=len2,]
+  maxind.dd <- maxind.dd[maxind.dd[,1]>=lenStrip1 + (boundary1+1) & maxind.dd[,1]<=len1 & maxind.dd[,2]>=lenStrip2 + (boundary2+1) & maxind.dd[,2]<=len2,]
 
   indlist1.dd <- seq(1, nlist1, stepsize)[maxind.dd[1]]
   indlist2.dd <- seq(1, nlist2, stepsize)[maxind.dd[2]]
@@ -113,19 +113,19 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
   genelist.uu <- intersect(list1[1:indlist1.uu, 1],
                            list2[1:indlist2.uu, 1])
   #
-  maxind.ud <- which(max(hypermat[1:boundary1, (boundary2+1):len2],
+  maxind.ud <- which(max(hypermat[1:boundary1, lenStrip2 + (boundary2+1):len2],
                          na.rm = TRUE) == hypermat, arr.ind = TRUE)
   #
-  maxind.ud <- maxind.ud[maxind.ud[,1]>=1 & maxind.ud[,1]<=boundary1 & maxind.ud[,2]>=(boundary2+1) & maxind.ud[,2]<=len2,]
+  maxind.ud <- maxind.ud[maxind.ud[,1]>=1 & maxind.ud[,1]<=boundary1 & maxind.ud[,2]>= lenStrip2 + (boundary2+1) & maxind.ud[,2]<=len2,]
 
   indlist1.ud <- seq(1, nlist1, stepsize)[maxind.ud[1]]
   indlist2.ud <- seq(1, nlist2, stepsize)[maxind.ud[2]]
   genelist.ud <- intersect(list1[1:indlist1.ud,
                                  1], list2[indlist2.ud:nlist2, 1])
-  maxind.du <- which(max(hypermat[(boundary1+1):len1, 1:boundary2],
+  maxind.du <- which(max(hypermat[lenStrip1 + (boundary1+1):len1, 1:boundary2],
                          na.rm = TRUE) == hypermat, arr.ind = TRUE)
   #
-  maxind.du <- maxind.du[maxind.du[,1]>=(boundary1+1) & maxind.du[,1]<=len1 & maxind.du[,2]>=1 & maxind.du[,2]<=boundary2,]
+  maxind.du <- maxind.du[maxind.du[,1]>=lenStrip1 + (boundary1+1) & maxind.du[,1]<=len1 & maxind.du[,2]>=1 & maxind.du[,2]<=boundary2,]
 
   indlist1.du <- seq(1, nlist1, stepsize)[maxind.du[1]]
   indlist2.du <- seq(1, nlist2, stepsize)[maxind.du[2]]
