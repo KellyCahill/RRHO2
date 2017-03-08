@@ -99,8 +99,8 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
   #
   maxind.dd <- maxind.dd[maxind.dd[,1]>=lenStrip1 + (boundary1+1) & maxind.dd[,1]<=len1 & maxind.dd[,2]>=lenStrip2 + (boundary2+1) & maxind.dd[,2]<=len2,]
 
-  indlist1.dd <- seq(1, nlist1, stepsize)[maxind.dd[1]]
-  indlist2.dd <- seq(1, nlist2, stepsize)[maxind.dd[2]]
+  indlist1.dd <- seq(1, nlist1, stepsize)[maxind.dd[1] - lenStrip1]
+  indlist2.dd <- seq(1, nlist2, stepsize)[maxind.dd[2] - lenStrip2]
   genelist.dd <- intersect(list1[indlist1.dd:nlist1,
                                  1], list2[indlist2.dd:nlist2, 1])
   maxind.uu <- which(max(hypermat[1:boundary1, 1:boundary2],
@@ -119,7 +119,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
   maxind.ud <- maxind.ud[maxind.ud[,1]>=1 & maxind.ud[,1]<=boundary1 & maxind.ud[,2]>= lenStrip2 + (boundary2+1) & maxind.ud[,2]<=len2,]
 
   indlist1.ud <- seq(1, nlist1, stepsize)[maxind.ud[1]]
-  indlist2.ud <- seq(1, nlist2, stepsize)[maxind.ud[2]]
+  indlist2.ud <- seq(1, nlist2, stepsize)[maxind.ud[2] - lenStrip2]
   genelist.ud <- intersect(list1[1:indlist1.ud,
                                  1], list2[indlist2.ud:nlist2, 1])
   maxind.du <- which(max(hypermat[lenStrip1 + (boundary1+1):len1, 1:boundary2],
@@ -127,7 +127,7 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
   #
   maxind.du <- maxind.du[maxind.du[,1]>=lenStrip1 + (boundary1+1) & maxind.du[,1]<=len1 & maxind.du[,2]>=1 & maxind.du[,2]<=boundary2,]
 
-  indlist1.du <- seq(1, nlist1, stepsize)[maxind.du[1]]
+  indlist1.du <- seq(1, nlist1, stepsize)[maxind.du[1] - lenStrip1]
   indlist2.du <- seq(1, nlist2, stepsize)[maxind.du[2]]
   genelist.du <- intersect(list1[indlist1.du:nlist1, 1],
                            list2[1:indlist2.du, 1])
