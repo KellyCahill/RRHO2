@@ -10,6 +10,7 @@
 ##' @param outputdir Path name where plots ae returned.
 ##' @param BY Logical. Should Benjamini-Yekutieli FDR corrected pvalues be computed?
 ##' @param log10.ind Logical. Should pvalues be reported and plotted in -log10 scale and not -log scale?
+##' @param maximum maximum value for a union scale, default is 200.
 ##' @return list of result
 ##' \item{hypermat}{Matrix of -log(pvals) of the test for the first i,j elements of the lists.}
 ##' @author Caleb
