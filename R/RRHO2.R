@@ -297,11 +297,8 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       upViewport()
       pushViewport(vp2)
       h2 <- draw.pairwise.venn(length(1:indlist1.uu), length(1:indlist2.uu),
-                               length(genelist.uu), category = c(labels[1],
-                                                                 labels[2]), scaled = TRUE, lwd = c(0, 0), fill = c("cornflowerblue",
-                                                                                                                    "darkorchid1"), cex = 1, cat.cex = 1.2, cat.pos = c(0,
-                                                                                                                                                                        0), ext.text = FALSE, main = "Negative", ind = FALSE,
-                               cat.dist = 0.01)
+                               length(genelist.uu), category = c(labels[1], labels[2]), scaled = TRUE, lwd = c(0, 0), fill = c("cornflowerblue", "darkorchid1"), cex = 1, cat.cex = 1.2, 
+			       cat.pos = c(0,0), ext.text = FALSE, main = "Negative", ind = FALSE, cat.dist = 0.01)
       grid.draw(h2)
       grid.text(paste("Up",labels[1],"Up",labels[2]), y = 1)
       dev.off()
@@ -334,14 +331,12 @@ RRHO2 <- function (list1, list2, stepsize = defaultStepSize(list1, list2),
       pushViewport(vp2)
       h2 <- draw.pairwise.venn(length(1:indlist1.ud), length(indlist2.ud:nlist2),
                                length(genelist.ud), category = c(labels[1], labels[2]), scaled = TRUE,
-							   lwd = c(0, 0), fill = c("cornflowerblue", "darkorchid1"), cex = 1, cat.cex = 1.2, cat.pos = c(0, 0), ext.text = FALSE,
-							   main = "Negative", ind = FALSE,
-                               cat.dist = 0.01)
+lwd = c(0, 0), fill = c("cornflowerblue", "darkorchid1"), cex = 1, cat.cex = 1.2, cat.pos = c(0, 0), ext.text = FALSE,
+main = "Negative", ind = FALSE,  cat.dist = 0.01)
+	    
       grid.draw(h2)
       grid.text(paste("Up",labels[1],"Down",labels[2]), y = 1)
       dev.off()
-
-
 
     })
     if (length(h2) == 0L)
